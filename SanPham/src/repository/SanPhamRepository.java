@@ -32,7 +32,7 @@ public class SanPhamRepository implements SanPhamINTF {
 
     @Override
     public List<SanPham> findAllData() {
-      return select 
+//      return select 
     }
 
     @Override
