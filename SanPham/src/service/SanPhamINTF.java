@@ -5,6 +5,7 @@ import java.util.List;
 
 
 public interface SanPhamINTF {
+    
     abstract public void insert(SanPham sp);
     
     abstract public void update(SanPham sp);
@@ -18,4 +19,8 @@ public interface SanPhamINTF {
     int getTotal();
     
     abstract public SanPham selectID1(String id);
+    
+    abstract public List<SanPham> getViByPage(int page, int recordInPage);
+
+    abstract public List<SanPham> selectBySQL(String sql, Object... args);
 }
