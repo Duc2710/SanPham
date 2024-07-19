@@ -22,7 +22,9 @@ public class SanPhamRepository implements SanPhamINTF {
 
     @Override
     public void insert(SanPham sp) {
-        JDBCHelper.update(insert, sp.getMaSanPham(), sp.getKieuDang(), sp.getTenSanPham(), sp.getUrl_Anh(), sp.isTrangThai());
+//        JDBCHelper.update(insert, sp.getMaSanPham(), sp.getKieuDang(), sp.getTenSanPham(), sp.getUrl_Anh(), sp.isTrangThai());
+        String sql = "INSERT INTO SanPham (ID_LoaiSanPham, ID_ThuongHieu, Ma_SanPham, TenSanPham, KieuDang, Url_Anh, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        JDBCHelper.update(sql, sp.getIdLoaiSanPham(), sp.getIdThuongHieu(), sp.getMaSanPham(), sp.getTenSanPham(), sp.getKieuDang(), sp.getUrl_Anh(), sp.isTrangThai());
     }
 
     @Override
@@ -85,7 +87,7 @@ public class SanPhamRepository implements SanPhamINTF {
         String sql = "SELECT COUNT(*) FROM SanPham Where TrangThai = 1";
         ResultSet rs = JDBCHelper.Query(sql);
         try {
-            while(rs.next()){
+            while (rs.next()) {
                 return rs.getInt(1);
             }
         } catch (Exception e) {
@@ -120,18 +122,23 @@ public class SanPhamRepository implements SanPhamINTF {
         }
         return 0;
     }
-    
-    public String selectNameById(int id){
-        return selectBySQL(selectID,id).get(0).getTenSanPham();
+
+    public String selectNameById(int id) {
+        return selectBySQL(selectID, id).get(0).getTenSanPham();
     }
-    
-    public int selectIdByName(String name){
+
+    public int selectIdByName(String name) {
         String sql = "SELECT * FROM SanPham where TenSanPham = ?";
-        return selectBySQL(sql,name).get(0).getIdSanPham();
+        return selectBySQL(sql, name).get(0).getIdSanPham();
     }
 
     @Override
     public List<SanPham> getViByPage(int page, int recordInPage) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void delete(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

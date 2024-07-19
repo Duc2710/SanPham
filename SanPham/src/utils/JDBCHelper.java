@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class JDBCHelper {
 
     static String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-    static String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=PoLyBop";
+    static String url = "jdbc:sqlserver://127.0.0.1:1433;databaseName=PoLyBop_01";
     static String user = "sa";
     static String password = "123456";
 
@@ -25,17 +25,34 @@ public class JDBCHelper {
         }
     }
 
+//    public static PreparedStatement getStmt(String sql, Object... args) throws Exception {
+//        Connection con = DriverManager.getConnection(url, user, password);//kết nối
+//        PreparedStatement stmt;
+//        if (sql.trim().startsWith("{")) {
+//            stmt = con.prepareCall(sql);//câu lệnh SQl là thủ tục
+//        } else {
+//            stmt = con.prepareStatement(sql);//câu lệnh sql select
+//        }
+//
+//        for (int i = 0; i < args.length; i++) {//i = 0 suy ra câu truy vấn không có ?
+//            stmt.setObject(i + 1, args[i]);//đẩy dữ liệu vào dấu ?
+//        }
+//        return stmt;
+//    }
     public static PreparedStatement getStmt(String sql, Object... args) throws Exception {
-        Connection con = DriverManager.getConnection(url, user, password);//kết nối
+        Connection con = DriverManager.getConnection(url, user, password);
         PreparedStatement stmt;
         if (sql.trim().startsWith("{")) {
-            stmt = con.prepareCall(sql);//câu lệnh SQl là thủ tục
+            stmt = con.prepareCall(sql);
         } else {
-            stmt = con.prepareStatement(sql);//câu lệnh sql select
+            stmt = con.prepareStatement(sql);
         }
 
-        for (int i = 0; i < args.length; i++) {//i = 0 suy ra câu truy vấn không có ?
-            stmt.setObject(i + 1, args[i]);//đẩy dữ liệu vào dấu ?
+        // Debugging: In ra câu lệnh SQL và các tham số
+        System.out.println("SQL: " + sql);
+        for (int i = 0; i < args.length; i++) {
+            System.out.println("Parameter " + (i + 1) + ": " + args[i]);
+            stmt.setObject(i + 1, args[i]);
         }
         return stmt;
     }

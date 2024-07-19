@@ -10,7 +10,7 @@ public interface SanPhamINTF {
     
     abstract public void update(SanPham sp);
     
-//    abstract public void delete(Integer id);
+    abstract public void delete(Integer id);
     
     abstract public List<SanPham> findAllData();
     
