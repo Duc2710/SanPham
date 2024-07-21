@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import service.SanPhamINTF;
 import utils.JDBCHelper;
+import java.sql.*;
 
 public class SanPhamRepository implements SanPhamINTF {
 
@@ -13,23 +14,42 @@ public class SanPhamRepository implements SanPhamINTF {
     String select_trangThai = "SELECT * FROM SanPham Where TrangThai = 0";
     String selectID1 = "SELECT * FROM SanPham where IDSanPham = ?";
     String selectID = "SELECT * FROM SanPham where Ma_SanPham = ?";
-    String insert = "INSERT INTO [SanPham] ([ID_LoaiSanPham], [ID_ThuongHieu], [Ma_SanPham], [KieuDang], [TenSanPham], [Url_Anh], [TrangThai])"
-            + " VALUES (?,?,?,?,?,?,?,?)";
-    String update = "Update SanPham set TenSanPham = ?, KieuDang = ?, ID_ThuongHieu = ?, Url_Anh =?, TrangThai = ? where Ma_SanPham = ?";
+    String insert = "INSERT INTO [SanPham] ( [IDLoaiSanPham], [ID_ThuongHieu], [Ma_SanPham], [KieuDang], [TenSanPham], [Url_Anh], [TrangThai])"
+            + " VALUES (?,?,?,?,?,?,?)";
+    String update = "UPDATE SanPham SET TenSanPham = ?, KieuDang = ?, ID_ThuongHieu = ?, Url_Anh = ?, TrangThai = ? WHERE Ma_SanPham = ?";
     String delete = "DELETE FROM SanPham where IDSanpham = ?";
-    String selectById = "select * from Vi where IDVi =?";
+    String selectById = "select * from SanPham where IDSanPham =?";
     String select_Trangthai1 = "SELECT * FROM SanPham WHERE Trangthai = 1";
 
     @Override
     public void insert(SanPham sp) {
-//        JDBCHelper.update(insert, sp.getMaSanPham(), sp.getKieuDang(), sp.getTenSanPham(), sp.getUrl_Anh(), sp.isTrangThai());
-        String sql = "INSERT INTO SanPham (ID_LoaiSanPham, ID_ThuongHieu, Ma_SanPham, TenSanPham, KieuDang, Url_Anh, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        JDBCHelper.update(sql, sp.getIdLoaiSanPham(), sp.getIdThuongHieu(), sp.getMaSanPham(), sp.getTenSanPham(), sp.getKieuDang(), sp.getUrl_Anh(), sp.isTrangThai());
+        String sql = "INSERT INTO [dbo].[SanPham]\n"
+                + "           ([IDLoaiSanPham]\n"
+                + "           ,[ID_ThuongHieu]\n"
+                + "           ,[Ma_SanPham]\n"
+                + "           ,[TenSanPham]\n"
+                + "           ,[KieuDang]\n"
+                + "           ,[Url_Anh]\n"
+                + "           ,[TrangThai])\n"
+                + "     VALUES\n"
+                + "           (" + sp.getIdLoaiSanPham() + "\n"
+                + "           ," + sp.getIdThuongHieu() + "\n"
+                + "           ,'" + sp.getMaSanPham() + "'\n"
+                + "           ,'" + sp.getTenSanPham() + "'\n"
+                + "           ,'" + sp.getKieuDang() + "'\n"
+                + "           ,'" + sp.getUrl_Anh() + "'\n"
+                + "           ," + (sp.isTrangThai() ? 1 : 0) + "\n"
+                + "		   )";
+        try (Connection con = JDBCHelper.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void update(SanPham sp) {
-        JDBCHelper.update(update, sp.getIdLoaiSanPham(), sp.getIdThuongHieu(), sp.getMaSanPham(), sp.getKieuDang(), sp.getTenSanPham(), sp.isTrangThai(), sp.getUrl_Anh());
+        JDBCHelper.update(update, sp.getTenSanPham(), sp.getKieuDang(), sp.getIdThuongHieu(), sp.getUrl_Anh(), sp.isTrangThai(), sp.getMaSanPham());
     }
 
     @Override
@@ -59,7 +79,7 @@ public class SanPhamRepository implements SanPhamINTF {
             while (rs.next()) {
                 SanPham sp = new SanPham();
                 sp.setIdSanPham(rs.getInt("IDSanPham"));
-                sp.setIdLoaiSanPham(rs.getInt("ID_LoaiSanPham"));
+                sp.setIdLoaiSanPham(rs.getInt("IDLoaiSanPham"));
                 sp.setIdThuongHieu(rs.getInt("ID_ThuongHieu"));
                 sp.setMaSanPham(rs.getString("Ma_SanPham"));
                 sp.setTenSanPham(rs.getString("TenSanPham"));

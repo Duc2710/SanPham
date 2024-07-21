@@ -94,18 +94,31 @@ public class JDBCHelper {
         }
     }
 
-    public static int update(String sql, Object... args) {
-        try {
-            PreparedStatement stmt = JDBCHelper.getStmt(sql, args);
-            try {
-                return stmt.executeUpdate();
-            } finally {
-                stmt.getConnection().close();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+//    public static int update(String sql, Object... args) {
+//        try {
+//            PreparedStatement stmt = JDBCHelper.getStmt(sql, args);
+//            try {
+//                return stmt.executeUpdate();
+//            } finally {
+//                stmt.getConnection().close();
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+    public static void update(String sql, Object... params) {
+    try (Connection conn = getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        for (int i = 0; i < params.length; i++) {
+            pstmt.setObject(i + 1, params[i]);
         }
+        pstmt.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
     }
+}
+
 
     public static void close(PreparedStatement psvm, Connection con, ResultSet rs) {
         try {

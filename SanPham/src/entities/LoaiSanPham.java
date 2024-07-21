@@ -1,7 +1,8 @@
 package entities;
 
 public class LoaiSanPham {
-      private int idLoaiSanPham;
+
+    private int idLoaiSanPham;
     private String maLoaiSanPham;
     private String tenLoaiSanPham;
     private boolean trangThai;
@@ -47,5 +48,5 @@ public class LoaiSanPham {
     public void setTrangThai(boolean trangThai) {
         this.trangThai = trangThai;
     }
-    
+
 }

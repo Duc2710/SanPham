@@ -62,24 +62,48 @@ public class ThuongHieuRepository implements INTFThuongHieu {
     }
 
     public String selectNameByID(int id) {
-        return selectBySQL(selectById, id).get(0).getTenThuongHieu();
+//        return selectBySQL(selectById, id).get(0).getTenThuongHieu();
+        List<ThuongHieu> list = selectBySQL(selectById, id);
+        if (list.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy thương hiệu với ID: " + id);
+        }
+        return list.get(0).getTenThuongHieu();
+
     }
 
 //    public int selectIdByName(String name) {
 //        String sql = "select * from ThuongHieu where TenThuongHieu =?";
 //        return selectBySQL(sql, name).get(0).getIdThuongHieu();
 //    }
-    
+//    public int selectIdByName(String name) {
+//    String sql = "select * from ThuongHieu where TenThuongHieu =?";
+//    List<ThuongHieu> list = selectBySQL(sql, name);
+//    if (list.isEmpty()) {
+//        // Xử lý khi không tìm thấy thương hiệu với tên tương ứng
+//        System.out.println("No element found with name: " + name);
+//        return -1; // Hoặc giá trị mặc định khác
+//    }
+//    return list.get(0).getIdThuongHieu();
+//}
     public int selectIdByName(String name) {
-    String sql = "select * from ThuongHieu where TenThuongHieu =?";
-    List<ThuongHieu> list = selectBySQL(sql, name);
-    if (list.isEmpty()) {
-        // Xử lý khi không tìm thấy thương hiệu với tên tương ứng
-        System.out.println("No element found with name: " + name);
-        return -1; // Hoặc giá trị mặc định khác
+//      String sql = "SELECT * FROM ThuongHieu WHERE TenThuongHieu = ?";
+//        List<ThuongHieu> list = selectBySQL(sql, name);
+//        if (list.isEmpty()) {
+//            // Xử lý khi không tìm thấy thương hiệu với tên tương ứng
+//            System.out.println("Không tìm thấy thương hiệu với tên: " + name);
+//            return -1; // Hoặc giá trị mặc định khác
+//        }
+//        return list.get(0).getIdThuongHieu();
+        String sql = "SELECT * FROM ThuongHieu WHERE TenThuongHieu = ?";
+        List<ThuongHieu> list = selectBySQL(sql, name);
+        if (list.isEmpty()) {
+            // Xử lý khi không tìm thấy thương hiệu với tên tương ứng
+            System.out.println("Không tìm thấy thương hiệu với tên: " + name);
+            return -1; // Hoặc giá trị mặc định khác, nhưng cần xử lý cẩn thận
+        }
+        return list.get(0).getIdThuongHieu();
+
     }
-    return list.get(0).getIdThuongHieu();
-}
 
     public ThuongHieu selectID1(String id) {
         List<ThuongHieu> list = selectBySQL(selectById1, id);

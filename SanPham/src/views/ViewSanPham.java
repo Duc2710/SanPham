@@ -300,6 +300,7 @@ public class ViewSanPham extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Sản Phẩm Hết Hàng", jPanel3);
 
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/plus.png"))); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -345,6 +346,7 @@ public class ViewSanPham extends javax.swing.JFrame {
             }
         });
 
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/plus.png"))); // NOI18N
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -581,7 +583,7 @@ public class ViewSanPham extends javax.swing.JFrame {
 
     private void btnLammoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLammoiActionPerformed
         // TODO add your handling code here:
-     
+
     }//GEN-LAST:event_btnLammoiActionPerformed
 
     private void btnThemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnThemMouseClicked
@@ -763,7 +765,7 @@ public class ViewSanPham extends javax.swing.JFrame {
                     x.getMaSanPham(),
                     x.getTenSanPham(),
                     dao_th.selectNameByID(x.getIdThuongHieu()),
-                    dao_th.selectNameByID(x.getIdLoaiSanPham()),
+                    dao_lsp.selecNameById(x.getIdLoaiSanPham()),
                     x.getKieuDang(),
                     x.isTrangThai() ? "Còn Hàng" : "Hết Hàng"
                 });
@@ -783,7 +785,7 @@ public class ViewSanPham extends javax.swing.JFrame {
                     x.getMaSanPham(),
                     x.getTenSanPham(),
                     dao_th.selectNameByID(x.getIdThuongHieu()),
-                    dao_th.selectNameByID(x.getIdLoaiSanPham()),
+                    dao_lsp.selecNameById(x.getIdLoaiSanPham()),
                     x.getKieuDang(),
                     x.isTrangThai() ? "Còn Hàng" : "Hết Hàng"
                 });
@@ -805,11 +807,11 @@ public class ViewSanPham extends javax.swing.JFrame {
 
 //    Combox Loại sản phẩm
     private void fillComboboxLoaiSanPham() {
-        DefaultComboBoxModel modelcbo = (DefaultComboBoxModel) cbxLoaiSanPham.getModel();
+        DefaultComboBoxModel<String> modelcbo = (DefaultComboBoxModel<String>) cbxLoaiSanPham.getModel();
         modelcbo.removeAllElements();
-        list_LSP = dao_lsp.selectAll();
+        list_LSP = dao_lsp.selectAll();  // Lấy danh sách loại sản phẩm từ cơ sở dữ liệu
         for (LoaiSanPham lsp : list_LSP) {
-            modelcbo.addElement(lsp.getTenLoaiSanPham());
+            modelcbo.addElement(lsp.getTenLoaiSanPham());  // Thêm tên loại sản phẩm vào model của combobox
         }
     }
 
@@ -825,33 +827,56 @@ public class ViewSanPham extends javax.swing.JFrame {
     }
 
     private SanPham getInformation() {
+//        SanPham sp = new SanPham();
+//        sp.setMaSanPham(txtMaVi.getText());
+//        sp.setTenSanPham(txtTenVi.getText());
+//        sp.setKieuDang(txtKieuDang.getText());
+//        sp.setIdThuongHieu(dao_th.selectIdByName(cbxThuongHieu.getSelectedItem() + ""));
+//        sp.setIdLoaiSanPham(dao_th.selectIdByName(cbxLoaiSanPham.getSelectedItem() + ""));
+//        sp.setTrangThai(rdo1.isSelected());
+//        sp.setUrl_Anh(lblHinh.getToolTipText());
+//        System.out.println(sp.getTenSanPham());
+//        System.out.println(sp.getUrl_Anh());
+//        return sp;
         SanPham sp = new SanPham();
-//        sp.setIDVi(Integer.parseInt(txtMaVi.getText()));
         sp.setMaSanPham(txtMaVi.getText());
         sp.setTenSanPham(txtTenVi.getText());
         sp.setKieuDang(txtKieuDang.getText());
-        sp.setIdThuongHieu(dao_th.selectIdByName(cbxThuongHieu.getSelectedItem() + ""));
-        sp.setIdLoaiSanPham(dao_th.selectIdByName(cbxLoaiSanPham.getSelectedItem() + ""));
+
+        // Lấy ID thương hiệu và loại sản phẩm từ combobox
+        String selectedThuongHieu = (String) cbxThuongHieu.getSelectedItem();
+        String selectedLoaiSanPham = (String) cbxLoaiSanPham.getSelectedItem();
+
+        // Xác định ID từ tên được chọn
+        sp.setIdThuongHieu(dao_th.selectIdByName(selectedThuongHieu));
+        sp.setIdLoaiSanPham(dao_lsp.selectIdByName(selectedLoaiSanPham));
+
         sp.setTrangThai(rdo1.isSelected());
         sp.setUrl_Anh(lblHinh.getToolTipText());
-        System.out.println(sp.getTenSanPham());
-        System.out.println(sp.getUrl_Anh());
+
         return sp;
     }
 
     private void setForm(SanPham sp) {
-        String thuonghieu = tblConhang.getValueAt(row, 2).toString();
-        for (int i = 0; i < list_TH.size(); i++) {
-            if (thuonghieu.equals(list_TH.get(i).getTenThuongHieu())) {
-                cbxThuongHieu.setSelectedIndex(i);
-            }
-        }
-        String loaisanpham = tblConhang.getValueAt(row, 3).toString();
-        for (int i = 0; i < list_LSP.size(); i++) {
-            if (loaisanpham.equals(list_LSP.get(i).getTenLoaiSanPham())) {
-                cbxLoaiSanPham.setSelectedIndex(i);
-            }
-        }
+//        String thuonghieu = tblConhang.getValueAt(row, 2).toString();
+//        for (int i = 0; i < list_TH.size(); i++) {
+//            if (thuonghieu.equals(list_TH.get(i).getTenThuongHieu())) {
+//                cbxThuongHieu.setSelectedIndex(i);
+//            }
+//        }
+//        String loaisanpham = tblConhang.getValueAt(row, 3).toString();
+//        for (int i = 0; i < list_LSP.size(); i++) {
+//            if (loaisanpham.equals(list_LSP.get(i).getTenLoaiSanPham())) {
+//                cbxLoaiSanPham.setSelectedIndex(i);
+//            }
+//        }
+
+        Object thuonghieuObj = tblConhang.getValueAt(row, 2);
+        String thuonghieu = (thuonghieuObj != null) ? thuonghieuObj.toString() : "";
+
+        Object loaisanphamObj = tblConhang.getValueAt(row, 3);
+        String loaisanpham = (loaisanphamObj != null) ? loaisanphamObj.toString() : "";
+
         txtMaVi.setText(sp.getMaSanPham());
         txtTenVi.setText(sp.getTenSanPham());
         txtKieuDang.setText(sp.getKieuDang());
@@ -866,19 +891,26 @@ public class ViewSanPham extends javax.swing.JFrame {
     }
 
     private void setForm1(SanPham sp) {
-        String thuonghieu = tblHetHang.getValueAt(row, 2).toString();
-        for (int i = 0; i < list_TH.size(); i++) {
-            if (thuonghieu.equals(list_TH.get(i).getTenThuongHieu())) {
-                cbxThuongHieu.setSelectedIndex(i);
-            }
-        }
-        String loaisanpham = tblConhang.getValueAt(row, 3).toString();
-        for (int i = 0; i < list_LSP.size(); i++) {
-            if (loaisanpham.equals(list_LSP.get(i).getTenLoaiSanPham())) {
-                cbxLoaiSanPham.setSelectedIndex(i);
-            }
-        }
-       txtMaVi.setText(sp.getMaSanPham());
+//        String thuonghieu = tblHetHang.getValueAt(row, 2).toString();
+//        for (int i = 0; i < list_TH.size(); i++) {
+//            if (thuonghieu.equals(list_TH.get(i).getTenThuongHieu())) {
+//                cbxThuongHieu.setSelectedIndex(i);
+//            }
+//        }
+//        String loaisanpham = tblConhang.getValueAt(row, 3).toString();
+//        for (int i = 0; i < list_LSP.size(); i++) {
+//            if (loaisanpham.equals(list_LSP.get(i).getTenLoaiSanPham())) {
+//                cbxLoaiSanPham.setSelectedIndex(i);
+//            }
+//        }
+
+        Object thuonghieuObj = tblHetHang.getValueAt(row, 2);
+        String thuonghieu = (thuonghieuObj != null) ? thuonghieuObj.toString() : "";
+
+        Object loaisanphamObj = tblHetHang.getValueAt(row, 3);
+        String loaisanpham = (loaisanphamObj != null) ? loaisanphamObj.toString() : "";
+
+        txtMaVi.setText(sp.getMaSanPham());
         txtTenVi.setText(sp.getTenSanPham());
         txtKieuDang.setText(sp.getKieuDang());
         rdo1.setSelected(sp.isTrangThai());
@@ -890,7 +922,7 @@ public class ViewSanPham extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }
-    
+
 //    Chuyển trang
     private void updateStatus() {
         boolean edit = (row >= 0);
@@ -905,7 +937,7 @@ public class ViewSanPham extends javax.swing.JFrame {
         jButton3.setEnabled(!last && edit);
         jButton4.setEnabled(!last && edit);
     }
-    
+
     private void updateStatus2() {
         boolean edit = (row >= 0);
         boolean fist = (row == 0);
@@ -919,7 +951,7 @@ public class ViewSanPham extends javax.swing.JFrame {
         jButton3.setEnabled(!last && edit);
         jButton4.setEnabled(!last && edit);
     }
-    
+
     private void edit() {
         String masp = tblConhang.getValueAt(row, 0).toString();
         SanPham sp = dao_vi.selectID1(masp);
@@ -939,24 +971,24 @@ public class ViewSanPham extends javax.swing.JFrame {
 
     private void clearForm() {
 //        txtMaVi.setText("");
-        txtMaVi.setText("");
-        txtTenVi.setText("");
-        txtKieuDang.setText("");
+        txtMaVi.setText(" ");
+        txtTenVi.setText(" ");
+        txtKieuDang.setText(" ");
         lblHinh.setIcon(null);
         row = -1;
-        identityMasp2();
-//        if (jTabbedPane1.getSelectedIndex() == 0) {
-//            updateStatus();
-//        }
-    }
-
-    private void identityMasp2() {
-        if (dao_vi.selectAll().isEmpty()) {
-            txtMaVi.setText("V001");
-        } else {
-            txtMaVi.setText("V0" + (dao_vi.selectMaxID() + 1));
+//        identityMasp2();
+        if (jTabbedPane1.getSelectedIndex() == 0) {
+            updateStatus();
         }
     }
+
+//    private void identityMasp2() {
+//        if (dao_vi.selectAll().isEmpty()) {
+//            txtMaVi.setText("V001");
+//        } else {
+//            txtMaVi.setText("V0" + (dao_vi.selectMaxID() + 1));
+//        }
+////    }
 
     private void insert() {
         if (Checknull()) {
@@ -1028,7 +1060,7 @@ public class ViewSanPham extends javax.swing.JFrame {
         }
 
     }
-    
+
 //    Check trống 
     private boolean Checknull() {
         if (txtMaVi.getText().equals("")) {
